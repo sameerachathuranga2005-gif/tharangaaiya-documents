@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Green Light Enterprises - Official Commercial Invoice Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="invoice.css">
+  <script src="auth.js"></script>
+  <script>enforceGleProtection();</script>
+</head>
+<body>
+
+  <!-- Top Action Bar (hidden on print) -->
+  <header class="app-toolbar no-print">
+    <div class="toolbar-brand">
+      <div class="toolbar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="toolbar-title">GLE Invoice Studio Pro</h1>
+        <p class="toolbar-subtitle">Click ANY text directly to edit • Executive Commercial & Tax Invoice System</p>
+      </div>
+    </div>
+
+    <div class="toolbar-actions">
+      <!-- Navigation Links -->
+      <a href="intro page.html" class="btn btn-secondary" title="Return to Intro Page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Intro</span>
+      </a>
+
+      <a href="1.html" class="btn btn-secondary" title="Switch to 1-Item Quotation">
+        <span>1 Item</span>
+      </a>
+
+      <a href="2.html" class="btn btn-secondary" title="Switch to 2-Item Quotation">
+        <span>2 Items</span>
+      </a>
+
+      <a href="3.html" class="btn btn-secondary" title="Switch to 3-Item Quotation">
+        <span>3 Items</span>
+      </a>
+
+      <button onclick="gleLock()" class="btn btn-secondary" title="Lock Studio and Sign Out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Lock</span>
+      </button>
+
+      <!-- Document Type Selector -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="docTypeMenuBtn" class="btn btn-secondary" title="Switch document title and purpose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10"/><path d="M7 12h10"/><path d="M7 17h6"/></svg>
+          <span>Doc: <strong id="docTypeLabel">Commercial Invoice</strong></span>
+        </button>
+        <div class="quick-items-popover doc-type-popover" id="docTypePopover">
+          <div class="popover-header">
+            <h4>Select Document Type</h4>
+            <button type="button" class="popover-close-btn" id="closeDocTypeBtn">&times;</button>
+          </div>
+          <button type="button" class="quick-item-btn" data-doctype="COMMERCIAL INVOICE" data-prefix="INV-">
+            <span class="item-name">Commercial Invoice</span>
+            <span class="item-desc">Standard corporate commercial billing invoice</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-doctype="TAX INVOICE" data-prefix="TAX-">
+            <span class="item-name">Official Tax Invoice</span>
+            <span class="item-desc">Includes TIN/VAT breakdown for corporate taxation</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-doctype="PROFORMA INVOICE" data-prefix="PI-">
+            <span class="item-name">Proforma Invoice</span>
+            <span class="item-desc">Advance payment & order confirmation invoice</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-doctype="CASH RECEIPT / MEMO" data-prefix="CSH-">
+            <span class="item-name">Cash Receipt / Memo</span>
+            <span class="item-desc">On-the-spot cash payment receipt & dispatch memo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Item Catalog Dropdown -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="quickItemsBtn" class="btn btn-success" title="Quickly add standard GLE packaging products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span>+ Add Product</span>
+        </button>
+        <div class="quick-items-popover" id="quickItemsPopover"></div>
+      </div>
+
+      <!-- Quick Clients Dropdown -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="clientsMenuBtn" class="btn btn-secondary" title="Select pre-saved client details">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Clients</span>
+        </button>
+        <div class="quick-items-popover" id="clientsPopover"></div>
+      </div>
+
+      <!-- Highlight Edit Mode Toggle -->
+      <button id="toggleEditBtn" class="btn btn-secondary active" title="Highlight all editable elements with dotted outlines">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <span id="editBtnText">All Text Editable</span>
+      </button>
+
+      <!-- Tax / VAT Toggle -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="taxMenuBtn" class="btn btn-secondary" title="Configure VAT or Government Levies">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Tax: <strong id="taxRateLabel">Non-VAT (0%)</strong></span>
+        </button>
+        <div class="quick-items-popover" id="taxPopover">
+          <div class="popover-header">
+            <h4>Tax / VAT Options</h4>
+            <button type="button" class="popover-close-btn" id="closeTaxBtn">&times;</button>
+          </div>
+          <button type="button" class="quick-item-btn" data-tax="0" data-tax-label="Non-VAT (0%)">
+            <span class="item-name">No Tax / Non-VAT</span>
+            <span class="item-desc">Standard SME packaging supply without VAT</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-tax="2.5" data-tax-label="SSCL (2.5%)">
+            <span class="item-name">SSCL (2.5%)</span>
+            <span class="item-desc">Social Security Contribution Levy</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-tax="18" data-tax-label="VAT (18%)">
+            <span class="item-name">VAT (18%)</span>
+            <span class="item-desc">Standard Sri Lanka Value Added Tax</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Discount Picker -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="discountMenuBtn" class="btn btn-secondary" title="Apply overall invoice discount">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+          <span>Discount: <strong id="currentDiscountLabel">0%</strong></span>
+        </button>
+        <div class="quick-items-popover" id="discountPopover">
+          <div class="popover-header">
+            <h4>Apply Discount</h4>
+            <button type="button" class="popover-close-btn" id="closeDiscountBtn">&times;</button>
+          </div>
+          <button type="button" class="quick-item-btn" data-discount="0">
+            <span class="item-name">No Discount (0%)</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-discount="2.5">
+            <span class="item-name">2.5% Goodwill Discount</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-discount="5">
+            <span class="item-name">5% Bulk Order Discount</span>
+          </button>
+          <button type="button" class="quick-item-btn" data-discount="10">
+            <span class="item-name">10% Corporate Partner Rate</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Feature Toggles Group -->
+      <button id="toggleBankBtn" class="btn btn-secondary active" title="Show or hide bank transfer details">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        <span>Bank</span>
+      </button>
+
+      <button id="toggleStampBtn" class="btn btn-secondary active" title="Show or hide official GLE corporate seal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Seal</span>
+      </button>
+
+      <button id="toggleSignatureBtn" class="btn btn-secondary active" title="Toggle authorized signature">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.5 4.5a2.121 2.121 0 0 1 3 3L7 21l-4 1 1-4L20.5 4.5z"/></svg>
+        <span>Signature</span>
+      </button>
+
+      <button id="toggleCustomerBoxBtn" class="btn btn-secondary active" title="Show or hide Customer Goods Received box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m19 11 2 2 4-4"/></svg>
+        <span>Customer Recv.</span>
+      </button>
+
+      <!-- Spacing Menu -->
+      <div class="toolbar-dropdown-wrap">
+        <button id="spacingMenuBtn" class="btn btn-secondary" title="Adjust text gap, word spacing, and line height">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 7 4 4 20 4 20 7"/>
+            <line x1="9" y1="20" x2="15" y2="20"/>
+            <line x1="12" y1="4" x2="12" y2="20"/>
+          </svg>
+          <span>Text Gap: <strong id="currentGapLabel">Normal</strong></span>
+        </button>
+
+        <div class="spacing-popover" id="spacingPopover">
+          <div class="popover-header">
+            <h4>Text Gap & Spacing</h4>
+            <button type="button" class="popover-close-btn" id="closeSpacingBtn">&times;</button>
+          </div>
+
+          <div class="spacing-control-group">
+            <div class="control-label-row">
+              <label for="wordSpacingSlider">Word Gap (වචන පරතරය)</label>
+              <span class="control-val-badge" id="wordGapVal">0.03em</span>
+            </div>
+            <input type="range" id="wordSpacingSlider" min="0" max="0.20" step="0.01" value="0.03">
+          </div>
+
+          <div class="spacing-control-group">
+            <div class="control-label-row">
+              <label for="lineHeightSlider">Line Gap / Height (පේළි පරතරය)</label>
+              <span class="control-val-badge" id="lineHeightVal">1.46</span>
+            </div>
+            <input type="range" id="lineHeightSlider" min="1.20" max="1.90" step="0.05" value="1.46">
+          </div>
+
+          <div class="spacing-control-group">
+            <div class="control-label-row">
+              <label for="letterSpacingSlider">Letter Spacing (අකුරු පරතරය)</label>
+              <span class="control-val-badge" id="letterGapVal">0.00em</span>
+            </div>
+            <input type="range" id="letterSpacingSlider" min="-0.02" max="0.08" step="0.005" value="0">
+          </div>
+
+          <div class="spacing-control-group">
+            <div class="control-label-row">
+              <label>Text Boldness (අකුරු ඝනකම)</label>
+              <span class="control-val-badge" id="textWeightVal">Regular</span>
+            </div>
+            <div class="weight-presets-row">
+              <button type="button" class="weight-pill active" data-weight="normal">Regular</button>
+              <button type="button" class="weight-pill" data-weight="medium">Medium</button>
+              <button type="button" class="weight-pill" data-weight="semibold">Semi-Bold</button>
+              <button type="button" class="weight-pill" data-weight="bold">Bold</button>
+            </div>
+          </div>
+
+          <div class="preset-label">Quick Presets:</div>
+          <div class="spacing-presets-row">
+            <button type="button" class="preset-pill" data-preset="compact">Tight</button>
+            <button type="button" class="preset-pill active" data-preset="normal">Normal</button>
+            <button type="button" class="preset-pill" data-preset="spacious">Spacious</button>
+            <button type="button" class="preset-pill" data-preset="wide">Wide</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Watermark Stamp Cycle -->
+      <button id="statusStampBtn" class="btn btn-secondary" title="Cycle watermark stamp (None -> PAID -> DUE -> ORIGINAL)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+        <span>Watermark: <strong id="statusStampLabel">None</strong></span>
+      </button>
+
+      <!-- Theme Switcher -->
+      <button id="themeToggleBtn" class="btn btn-secondary" title="Switch corporate palette">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        <span>Theme: <strong id="currentThemeName">Emerald GLE</strong></span>
+      </button>
+
+      <!-- Save & Export JSON -->
+      <button id="exportJsonBtn" class="btn btn-secondary" title="Export invoice data as a JSON file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Save JSON</span>
+      </button>
+
+      <!-- Import JSON -->
+      <label class="btn btn-secondary" title="Load past saved invoice JSON" style="margin: 0; cursor: pointer;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Load JSON</span>
+        <input type="file" id="importJsonInput" accept=".json" style="display: none;">
+      </label>
+
+      <!-- Next Invoice Number -->
+      <button id="nextInvBtn" class="btn btn-secondary" title="Increment Invoice Number to next sequence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+        <span>Next No.</span>
+      </button>
+
+      <!-- Reset -->
+      <button id="resetBtn" class="btn btn-ghost" title="Reset to default official invoice details">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Reset</span>
+      </button>
+
+      <!-- Print / PDF -->
+      <button id="printBtn" class="btn btn-primary" title="Print or save as high-resolution A4 PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>Print / Save PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Document Viewport -->
+  <main class="page-viewport">
+
+    <!-- Official A4 Document Page (Exact Dimensions: 210mm x 297mm) -->
+    <article class="a4-sheet theme-emerald" id="invoiceDoc">
+
+      <!-- Top Stripe Accent matching official invoice -->
+      <div class="top-stripe-accent" aria-hidden="true"></div>
+
+      <!-- Main Invoice Document Content Wrapper -->
+      <div class="invoice-body-wrapper">
+
+        <!-- Watermark Status Stamp (PAID / DUE / ORIGINAL) -->
+        <div class="invoice-status-stamp" id="statusStamp">PAID</div>
+
+        <!-- 1. Header Section (Logo + INVOICE Title & Metadata) -->
+        <header class="invoice-header">
+          <div class="invoice-brand-left">
+            <img src="logo.png" alt="Green Light Enterprises Logo" class="invoice-brand-logo">
+            <div class="brand-subtext">
+              <span class="brand-tagline" contenteditable="true" spellcheck="false" data-key="brandTagline">Stretch Film • Industrial Packaging Solutions</span>
+              <span class="brand-reg" contenteditable="true" spellcheck="false" data-key="brandReg">Business Reg No: PV/W 0029381 • TIN: 104829192</span>
+            </div>
+          </div>
+
+          <div class="invoice-title-meta-right">
+            <div class="title-status-row">
+              <h1 class="invoice-main-heading" id="docTypeHeading" contenteditable="true" spellcheck="false">COMMERCIAL INVOICE</h1>
+              <!-- Interactive Status Badge Pill -->
+              <span class="invoice-status-pill status-paid" id="headerStatusPill" title="Click to cycle payment status">
+                <span class="status-dot"></span>
+                <span id="headerStatusText" contenteditable="true" spellcheck="false">PAID</span>
+              </span>
+            </div>
+
+            <div class="invoice-meta-card">
+              <div class="meta-row">
+                <span class="meta-label" contenteditable="true" spellcheck="false">Invoice No:</span>
+                <span class="meta-val" contenteditable="true" spellcheck="false" data-key="invoiceNo">INV-2026-001</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label" contenteditable="true" spellcheck="false">Date:</span>
+                <span class="meta-val" contenteditable="true" spellcheck="false" data-key="invoiceDate">15 September 2026</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label" contenteditable="true" spellcheck="false">Due Date:</span>
+                <span class="meta-val" contenteditable="true" spellcheck="false" data-key="invoiceDueDate">22 September 2026</span>
+              </div>
+              <div class="meta-row" id="poRow">
+                <span class="meta-label" contenteditable="true" spellcheck="false">P.O. Number:</span>
+                <span class="meta-val" contenteditable="true" spellcheck="false" data-key="invoicePo">GLE-PO-048</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Divider Line -->
+        <div class="header-divider-line"></div>
+
+        <!-- 2. Billed From / Billed To Section -->
+        <section class="billing-parties-grid">
+          <!-- Billed From Column -->
+          <div class="party-block party-from">
+            <div class="party-label-wrap">
+              <div class="party-icon-dot"></div>
+              <span class="party-label" contenteditable="true" spellcheck="false">BILLED FROM (SUPPLIER)</span>
+            </div>
+            <div class="party-name" contenteditable="true" spellcheck="false" data-key="fromCompany">Green Light Enterprises (GLE)</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="fromAddress">3/9A, Rita Lane, Wewala, Ja-Ela, Sri Lanka</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="fromContact">Tel: 011 224 4746 | Mob: 077 324 8520</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="fromEmail">Email: gle.triplet@gmail.com</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="fromWeb">Web: greenlightgle.com</div>
+          </div>
+
+          <!-- Billed To Column -->
+          <div class="party-block party-to">
+            <div class="party-label-wrap">
+              <div class="party-icon-dot to-dot"></div>
+              <span class="party-label" contenteditable="true" spellcheck="false">BILLED TO (CUSTOMER)</span>
+            </div>
+            <div class="party-name" contenteditable="true" spellcheck="false" data-key="clientCompany">Dilmin Enterprise</div>
+            <div class="party-attn" contenteditable="true" spellcheck="false" data-key="clientAttn">Attn. Mr Chaminda Pathirana</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="clientAddress1">Katupotha Rd.</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="clientAddress2">Moonamaldeniya, Sri Lanka</div>
+            <div class="party-line" contenteditable="true" spellcheck="false" data-key="clientContact">Contact: 077 412 8930</div>
+          </div>
+        </section>
+
+        <!-- 2.5 Commercial Logistics Strip (Order & Dispatch Info) -->
+        <section class="logistics-info-strip">
+          <div class="logistics-item">
+            <span class="logistics-label" contenteditable="true" spellcheck="false">DISPATCH METHOD</span>
+            <span class="logistics-val" contenteditable="true" spellcheck="false" data-key="dispatchMethod">Road Transport / Lorry</span>
+          </div>
+          <div class="logistics-divider"></div>
+          <div class="logistics-item">
+            <span class="logistics-label" contenteditable="true" spellcheck="false">PAYMENT TERMS</span>
+            <span class="logistics-val" contenteditable="true" spellcheck="false" data-key="paymentTerms">Net 14 Days / Bank Wire</span>
+          </div>
+          <div class="logistics-divider"></div>
+          <div class="logistics-item">
+            <span class="logistics-label" contenteditable="true" spellcheck="false">DELIVERY DESTINATION</span>
+            <span class="logistics-val" contenteditable="true" spellcheck="false" data-key="deliveryDest">Customer Central Warehouse</span>
+          </div>
+          <div class="logistics-divider"></div>
+          <div class="logistics-item">
+            <span class="logistics-label" contenteditable="true" spellcheck="false">CURRENCY</span>
+            <span class="logistics-val" id="currencyBadgeVal" contenteditable="true" spellcheck="false">LKR (Rs.)</span>
+          </div>
+        </section>
+
+        <!-- 3. Line Items Table -->
+        <section class="invoice-table-container">
+          <table class="invoice-items-table" id="invoiceTable">
+            <thead>
+              <tr>
+                <th class="col-num" contenteditable="true" spellcheck="false">#</th>
+                <th class="col-item" contenteditable="true" spellcheck="false">ITEM NAME</th>
+                <th class="col-desc" contenteditable="true" spellcheck="false">SPECIFICATIONS / ROLL SIZE</th>
+                <th class="col-unit" contenteditable="true" spellcheck="false">UNIT</th>
+                <th class="col-qty" contenteditable="true" spellcheck="false">QTY</th>
+                <th class="col-price" contenteditable="true" spellcheck="false">UNIT PRICE (RS.)</th>
+                <th class="col-amount" contenteditable="true" spellcheck="false">AMOUNT (RS.)</th>
+                <th class="col-actions no-print"></th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+              <!-- Default Initial Items -->
+              <tr class="invoice-row">
+                <td class="col-num">1</td>
+                <td class="col-item cell-item" contenteditable="true" spellcheck="false">Stretch Film</td>
+                <td class="col-desc cell-desc" contenteditable="true" spellcheck="false">21m x 500mm x 300m</td>
+                <td class="col-unit cell-unit"><span class="unit-pill" contenteditable="true" spellcheck="false">Rolls</span></td>
+                <td class="col-qty cell-qty" contenteditable="true" spellcheck="false">1</td>
+                <td class="col-price cell-price" contenteditable="true" spellcheck="false">1,850.00</td>
+                <td class="col-amount cell-amount" contenteditable="true" spellcheck="false">1,850.00</td>
+                <td class="col-actions no-print">
+                  <div class="row-actions-group">
+                    <button type="button" class="row-move-btn move-up" title="Move Up">▲</button>
+                    <button type="button" class="row-move-btn move-down" title="Move Down">▼</button>
+                    <button type="button" class="row-delete-btn" title="Delete item">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="invoice-row">
+                <td class="col-num">2</td>
+                <td class="col-item cell-item" contenteditable="true" spellcheck="false">Hand Grade Stretch Film</td>
+                <td class="col-desc cell-desc" contenteditable="true" spellcheck="false">500mm x 300m • 20 MCM • 1.9 kg with core</td>
+                <td class="col-unit cell-unit"><span class="unit-pill" contenteditable="true" spellcheck="false">Rolls</span></td>
+                <td class="col-qty cell-qty" contenteditable="true" spellcheck="false">5</td>
+                <td class="col-price cell-price" contenteditable="true" spellcheck="false">1,650.00</td>
+                <td class="col-amount cell-amount" contenteditable="true" spellcheck="false">8,250.00</td>
+                <td class="col-actions no-print">
+                  <div class="row-actions-group">
+                    <button type="button" class="row-move-btn move-up" title="Move Up">▲</button>
+                    <button type="button" class="row-move-btn move-down" title="Move Down">▼</button>
+                    <button type="button" class="row-delete-btn" title="Delete item">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="add-row-bar no-print">
+            <button type="button" class="add-row-btn" id="addRowBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>+ Add Blank Row</span>
+            </button>
+            <button type="button" class="add-row-btn secondary" id="clearRowsBtn" title="Clear all table rows">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+              <span>Clear Items</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 4. Financial Calculations, Words, Bank Details & Terms Grid -->
+        <section class="invoice-finance-grid">
+          
+          <!-- Left: Amount in Words, Bank Information & Concise Terms -->
+          <div class="finance-left-col">
+            <!-- Amount In Words -->
+            <div class="words-card">
+              <div class="words-card-title" contenteditable="true" spellcheck="false">AMOUNT IN WORDS (LKR)</div>
+              <div class="words-card-text" id="amountWordsText" contenteditable="true" spellcheck="false">Sri Lankan Rupees Ten Thousand One Hundred Only</div>
+            </div>
+
+            <!-- Bank Transfer Details (Collapsible / Toggleable) -->
+            <div class="bank-details-card" id="bankDetailsCard">
+              <div class="bank-card-header">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <span contenteditable="true" spellcheck="false">DIRECT BANK TRANSFER DETAILS</span>
+                </div>
+                <span class="lankapay-badge" contenteditable="true" spellcheck="false">LankaQR / CEFTS</span>
+              </div>
+              <div class="bank-info-grid">
+                <div class="bank-info-item">
+                  <span class="bank-info-label" contenteditable="true" spellcheck="false">Bank:</span>
+                  <span class="bank-info-val" contenteditable="true" spellcheck="false" data-key="bankName">Commercial Bank of Ceylon PLC</span>
+                </div>
+                <div class="bank-info-item">
+                  <span class="bank-info-label" contenteditable="true" spellcheck="false">Account Name:</span>
+                  <span class="bank-info-val" contenteditable="true" spellcheck="false" data-key="bankAccName">Green Light Enterprises</span>
+                </div>
+                <div class="bank-info-item">
+                  <span class="bank-info-label" contenteditable="true" spellcheck="false">Account No:</span>
+                  <span class="bank-info-val highlight" contenteditable="true" spellcheck="false" data-key="bankAccNo">1000 4829 1920</span>
+                </div>
+                <div class="bank-info-item">
+                  <span class="bank-info-label" contenteditable="true" spellcheck="false">Branch & Code:</span>
+                  <span class="bank-info-val" contenteditable="true" spellcheck="false" data-key="bankBranch">Ja-Ela (Br: 048 | Bank: 7056)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Concise Commercial Terms Block -->
+            <div class="invoice-notes-block">
+              <div class="notes-heading">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <span contenteditable="true" spellcheck="false">COMMERCIAL TERMS & INSTRUCTIONS</span>
+              </div>
+              <ul class="notes-list" data-key="invoiceNotes">
+                <li contenteditable="true" spellcheck="false">Payment is due within agreed terms via direct bank transfer or crossed cheque.</li>
+                <li contenteditable="true" spellcheck="false">Please draw all crossed cheques in favour of "Green Light Enterprises".</li>
+                <li contenteditable="true" spellcheck="false">Goods once delivered will be replaced only under genuine manufacturing defect warranty.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Right: Totals Summary Block -->
+          <div class="invoice-summary-box">
+            <div class="summary-line">
+              <span class="summary-label" contenteditable="true" spellcheck="false">Subtotal</span>
+              <span class="summary-val" id="subtotalVal" contenteditable="true" spellcheck="false">Rs. 10,100.00</span>
+            </div>
+
+            <!-- Discount Row -->
+            <div class="summary-line discount-row" id="discountSummaryRow">
+              <span class="summary-label">
+                <span contenteditable="true" spellcheck="false">Discount</span>
+                <span class="discount-badge" id="discountBadge" contenteditable="true" spellcheck="false">0%</span>
+              </span>
+              <span class="summary-val discount-val" id="discountVal" contenteditable="true" spellcheck="false">- Rs. 0.00</span>
+            </div>
+
+            <!-- Tax / VAT Row (Configurable) -->
+            <div class="summary-line tax-row" id="taxSummaryRow" style="display: none;">
+              <span class="summary-label">
+                <span id="taxTypeTitle" contenteditable="true" spellcheck="false">Government Tax</span>
+                <span class="tax-badge" id="taxRateBadge" contenteditable="true" spellcheck="false">0%</span>
+              </span>
+              <span class="summary-val tax-val" id="taxVal" contenteditable="true" spellcheck="false">+ Rs. 0.00</span>
+            </div>
+
+            <!-- Total Due Emerald Badge Card -->
+            <div class="total-due-card">
+              <div>
+                <span class="total-label" contenteditable="true" spellcheck="false">TOTAL AMOUNT DUE</span>
+                <span class="total-terms-sub" contenteditable="true" spellcheck="false">Payable in Sri Lankan Rupees</span>
+              </div>
+              <span class="total-val" id="totalDueVal" contenteditable="true" spellcheck="false">Rs. 10,100.00</span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 5. Dual Authority Grid: Customer Acceptance (Left 50%) + Supplier Signatory (Right 50%) -->
+        <section class="invoice-bottom-authority-grid">
+          
+          <!-- Left: Customer Acknowledgement Box (Essential for Commercial Delivery Invoices) -->
+          <div class="customer-ack-card" id="customerAcceptanceBox">
+            <div class="ack-card-header">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+              <span contenteditable="true" spellcheck="false">CUSTOMER GOODS ACCEPTANCE</span>
+            </div>
+            <p class="ack-text" contenteditable="true" spellcheck="false">Received the above packaging goods in exact quantity and sound condition.</p>
+            <div class="ack-fields-grid">
+              <div class="ack-field">
+                <span class="ack-field-label" contenteditable="true" spellcheck="false">Received By:</span>
+                <div class="ack-line-placeholder"></div>
+              </div>
+              <div class="ack-field">
+                <span class="ack-field-label" contenteditable="true" spellcheck="false">Date & Stamp:</span>
+                <div class="ack-line-placeholder"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Supplier Authorized Signatory Block & Official Corporate Seal -->
+          <div class="supplier-signatory-card">
+            <div class="signatory-content">
+              <div class="closing-salute" contenteditable="true" spellcheck="false">For Green Light Enterprises,</div>
+              
+              <!-- Digital Signature Script -->
+              <div class="digital-signature-wrap" id="digitalSignatureWrap">
+                <div class="signature-cursive" contenteditable="true" spellcheck="false">Imara Weerasinghe</div>
+              </div>
+
+              <div class="closing-name" contenteditable="true" spellcheck="false" data-key="signatoryName">Imara Weerasinghe</div>
+              <div class="closing-role" contenteditable="true" spellcheck="false" data-key="signatoryRole">Proprietor / Authorized Officer</div>
+            </div>
+
+            <!-- Official Vector Corporate Seal -->
+            <div class="official-corporate-seal" id="corporateSeal" title="Official GLE Security Seal">
+              <div class="seal-inner-circle">
+                <span class="seal-text-top" contenteditable="true" spellcheck="false">GREEN LIGHT ENTERPRISES</span>
+                <span class="seal-star" contenteditable="true" spellcheck="false">★ OFFICIAL ★</span>
+                <span class="seal-text-mid" contenteditable="true" spellcheck="false">APPROVED & ISSUED</span>
+                <span class="seal-text-bottom" contenteditable="true" spellcheck="false">JA-ELA • SRI LANKA</span>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- 7. Bottom Corporate Contact Footer Bar (Solid, Fully Visible, Flush) -->
+      <footer class="doc-footer-bar">
+        <div class="footer-col">
+          <div class="footer-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div class="footer-col-text">
+            <span class="footer-label" contenteditable="true" spellcheck="false">PHONE / WHATSAPP</span>
+            <span class="footer-val" contenteditable="true" spellcheck="false" data-key="footerPhone">077 324 8520 / 011 224 4746</span>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-col">
+          <div class="footer-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <div class="footer-col-text">
+            <span class="footer-label" contenteditable="true" spellcheck="false">EMAIL ENQUIRIES</span>
+            <span class="footer-val" contenteditable="true" spellcheck="false" data-key="footerEmail">gle.triplet@gmail.com</span>
+          </div>
+        </div>
+
+        <div class="footer-divider"></div>
+
+        <div class="footer-col">
+          <div class="footer-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <div class="footer-col-text">
+            <span class="footer-label" contenteditable="true" spellcheck="false">OFFICIAL WEBSITE</span>
+            <span class="footer-val" contenteditable="true" spellcheck="false" data-key="footerWebsite">greenlightgle.com</span>
+          </div>
+        </div>
+      </footer>
+
+    </article>
+  </main>
+
+  <script src="invoice.js"></script>
+</body>
+</html>
